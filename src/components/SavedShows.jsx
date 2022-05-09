@@ -25,6 +25,18 @@ const SavedShows = () => {
         });
     }, [user?.email]);
 
+    const movieRef = doc(db, 'users', `${user?.email}`);
+    const deleteShow = async (passedID) => {
+        try {
+            const result = movies.filter((item) => item.id !== passedID);
+            await updateDoc(movieRef, {
+                savedShows: result,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <>
             <h2 className='text-white font-bold md:text-xl p-4'>My Shows</h2>
@@ -52,7 +64,10 @@ const SavedShows = () => {
                                 <p className='white-space-normal text-xs md:text-sm font-bold flex justify-center items-center h-full text-center'>
                                     {item?.title}
                                 </p>
-                                <p>
+                                <p
+                                    onClick={() => deleteShow(item.id)}
+                                    className='absolute text-gray-300 top-4 right-4'
+                                >
                                     <AiOutlineClose />
                                 </p>
                             </div>
